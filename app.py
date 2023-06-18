@@ -1,5 +1,6 @@
 # Import standard libraries
 import os
+import traceback
 
 # Import third-party libraries
 import streamlit as st
@@ -7,10 +8,12 @@ import streamlit as st
 # Import project code
 from gui.history import ChatHistory
 from gui.layout import Layout
-from gui.sidebar import Sidebar, Utilities
+from gui.sidebar import Sidebar
+from gui.utils import Utilities
 
 if __name__ == "__main__":
-    st.set_page_config(layout="wide", page_icon="💬", page_title="ChatPDF")
+    st.set_page_config(layout="wide", page_icon="💬", page_title="Doc-GPT")
+
     layout, sidebar, utils = Layout(), Sidebar(), Utilities()
 
     layout.show_header()
@@ -50,7 +53,10 @@ if __name__ == "__main__":
                     history.generate_messages(response_container)
 
             except Exception as e:
-                st.error(f"{e}")
-                st.stop()
+                error_message = str(e)
+                stack_trace = traceback.format_exc()
+
+                st.error(f"An error occurred: {error_message}\n{stack_trace}")
+                # st.stop()
 
     sidebar.about()

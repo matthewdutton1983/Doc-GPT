@@ -15,7 +15,6 @@ from gui.utils import Utilities
 
 if __name__ == "__main__":
     st.set_page_config(layout="wide", page_icon="💬", page_title="Doc-GPT")
-    st.sidebar.title("Doc-GPT")
 
     layout, sidebar, utils = Layout(), Sidebar(), Utilities()
     layout.show_header()

@@ -11,9 +11,7 @@ class Chatbot:
         self.vectors = vectors
 
     def conversational_chat(self, query):
-        """
-        Starts a conversational chat with a model via Langchain
-        """
+        """Starts a conversational chat with a model via Langchain"""
         chain = ConversationalRetrievalChain.from_llm(
             llm=ChatOpenAI(model_name=self.model_name,
                            temperature=self.temperature),

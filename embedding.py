@@ -1,4 +1,5 @@
 # Import standard libraries
+import hashlib
 import os
 import pickle
 import tempfile
@@ -15,16 +16,12 @@ class Embedder:
         self.createEmbeddingsDir()
 
     def createEmbeddingsDir(self):
-        """
-        Creates a directory to store the embeddings vectors
-        """
+        """Creates a directory to store the embeddings vectors"""
         if not os.path.exists(self.PATH):
             os.mkdir(self.PATH)
 
-    def storeDocEmbeds(self, file, filename):
-        """
-        Stores document embeddings using Langchain and FAISS
-        """
+    def storeDocEmbeds(self, file, hash):
+        """Stores document embeddings using Langchain and FAISS"""
         # Write the uploaded file to a temporary file
         with tempfile.NamedTemporaryFile(mode="wb", delete=False) as tmp_file:
             tmp_file.write(file)
@@ -36,25 +33,26 @@ class Embedder:
         print(f"Loaded {len(data)} documents from {tmp_file_path}")
 
         # Create an embeddings object using Langchain
-        embeddings = OpenAIEmbeddings(allowed_special={"<|endofprompt|>"})
+        embeddings = OpenAIEmbeddings(allowed_special={''})
 
         # Store the embeddings vectors using FAISS
         vectors = FAISS.from_documents(data, embeddings)
         os.remove(tmp_file_path)
 
         # Save the vectors to a pickle file
-        with open(f"{self.PATH}/{filename}.pkl", "wb") as f:
+        with open(f"{self.PATH}/{hash}.pkl", "wb") as f:
             pickle.dump(vectors, f)
 
     def getDocEmbeds(self, file, filename):
-        """
-        Retrieves document embeddings
-        """
+        """Retrieves document embeddings"""
+        # Create a hash of the file content
+        hash = hashlib.md5(file).hexdigest()
+
         # Check if embeddings vectors have already been stored in a pickle file
-        pkl_file = f"{self.PATH}/{filename}.pkl"
+        pkl_file = f"{self.PATH}/{hash}.pkl"
         if not os.path.isfile(pkl_file):
             # If not, store the vectors using the storeDocEmbeds function
-            self.storeDocEmbeds(file, filename)
+            self.storeDocEmbeds(file, hash)
 
         # Load the vectors from the pickle file
         with open(pkl_file, "rb") as f:

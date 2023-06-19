@@ -48,15 +48,12 @@ class Utilities:
                 # Open the file and read its content
                 with open(uploaded_file, "rb") as f:
                     file = f.read()
-                # Use the file name without the path and extension as the name
-                name = os.path.splitext(os.path.basename(uploaded_file))[0]
             else:
                 # If uploaded_file is a file-like object, use seek() and read()
                 uploaded_file.seek(0)
                 file = uploaded_file.read()
-                name = uploaded_file.name
 
-            vectors = embeds.getDocEmbeds(file, name)
+            vectors = embeds.get_doc_embeds(file)
             chatbot = Chatbot(model, temperature, vectors)
         st.session_state["ready"] = True
 

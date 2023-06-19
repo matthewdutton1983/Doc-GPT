@@ -13,14 +13,14 @@ from langchain.vectorstores import FAISS
 class Embedder:
     def __init__(self):
         self.PATH = "embeddings"
-        self.createEmbeddingsDir()
+        self.create_embeddings_dir()
 
-    def createEmbeddingsDir(self):
+    def create_embeddings_dir(self):
         """Creates a directory to store the embeddings vectors"""
         if not os.path.exists(self.PATH):
             os.mkdir(self.PATH)
 
-    def storeDocEmbeds(self, file, hash):
+    def store_doc_embeds(self, file, hash):
         """Stores document embeddings using Langchain and FAISS"""
         # Write the uploaded file to a temporary file
         with tempfile.NamedTemporaryFile(mode="wb", delete=False) as tmp_file:
@@ -43,7 +43,7 @@ class Embedder:
         with open(f"{self.PATH}/{hash}.pkl", "wb") as f:
             pickle.dump(vectors, f)
 
-    def getDocEmbeds(self, file, filename):
+    def get_doc_embeds(self, file):
         """Retrieves document embeddings"""
         # Create a hash of the file content
         hash = hashlib.md5(file).hexdigest()
@@ -51,8 +51,8 @@ class Embedder:
         # Check if embeddings vectors have already been stored in a pickle file
         pkl_file = f"{self.PATH}/{hash}.pkl"
         if not os.path.isfile(pkl_file):
-            # If not, store the vectors using the storeDocEmbeds function
-            self.storeDocEmbeds(file, hash)
+            # If not, store the vectors using the store_doc_embeds function
+            self.store_doc_embeds(file, hash)
 
         # Load the vectors from the pickle file
         with open(pkl_file, "rb") as f:

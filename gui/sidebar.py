@@ -1,12 +1,5 @@
-# Import standard libraries
-import os
-
 # Import third-party libraries
 import streamlit as st
-
-# Import project code
-from chatbot import Chatbot
-from embedding import Embedder
 
 
 class Sidebar:
@@ -18,19 +11,19 @@ class Sidebar:
 
     @staticmethod
     def about():
-        about = st.sidebar.expander("About")
+        about = st.sidebar.expander("About", expanded=False)
         sections = [
-            "#### ChatPDF is an AI chatbot featuring conversational memory, designed to enable users to discuss their "
-            "PDF data in a more intuitive manner.",
-            "#### Powered by [Langchain](https://github.com/hwchase17/langchain), [OpenAI]("
-            "https://platform.openai.com/docs/models/gpt-3-5) and [Streamlit](https://github.com/streamlit/streamlit) "
-            "#### Source code : [Ubisoft-potato/ChatPDF](https://github.com/Ubisoft-potato/ChatPDF)",
+            "#### Powered by: [Langchain](https://github.com/hwchase17/langchain), "
+            "[OpenAI](https://platform.openai.com/docs/models/gpt-3-5) and "
+            "[Streamlit](https://github.com/streamlit/streamlit)",
+            "#### Source code : [GitHub](https://github.com/matthewdutton1983/Doc-GPT)",
         ]
         for section in sections:
             about.write(section)
 
     def model_selector(self):
-        model = st.selectbox(label="Model", options=self.MODEL_OPTIONS)
+        model = st.radio(
+            label="Model", options=self.MODEL_OPTIONS, horizontal=True)
         st.session_state["model"] = model
 
     @staticmethod
@@ -57,52 +50,3 @@ class Sidebar:
             st.session_state.setdefault("model", self.MODEL_OPTIONS[0])
             st.session_state.setdefault(
                 "temperature", self.TEMPERATURE_DEFAULT_VALUE)
-
-
-class Utilities:
-    @staticmethod
-    def load_api_key():
-        """
-        Loads the OpenAI API key from the .env file or from the user's input
-        and returns it
-        """
-        if os.path.exists(".env") and os.environ.get("OPENAI_API_KEY") is not None:
-            user_api_key = os.environ["OPENAI_API_KEY"]
-            st.sidebar.success("API key loaded from .env")
-        else:
-            user_api_key = st.sidebar.text_input(
-                label="#### Your OpenAI API key", placeholder="Paste your openAI API key, sk-", type="password"
-            )
-            if user_api_key:
-                st.sidebar.success("API key loaded")
-        return user_api_key
-
-    @staticmethod
-    def handle_upload():
-        """
-        Handles the file upload and displays the uploaded file
-        """
-        uploaded_file = st.sidebar.file_uploader(
-            "upload", type="pdf", label_visibility="collapsed")
-        if uploaded_file is not None:
-            pass
-        else:
-            st.sidebar.info(
-                "Upload a PDF file to get started"
-            )
-            st.session_state["reset_chat"] = True
-        return uploaded_file
-
-    @staticmethod
-    def setup_chatbot(uploaded_file, model, temperature):
-        """
-        Sets up the chatbot with the uploaded file, model, and temperature
-        """
-        embeds = Embedder()
-        with st.spinner("Processing ..."):
-            uploaded_file.seek(0)
-            file = uploaded_file.read()
-            vectors = embeds.getDocEmbeds(file, uploaded_file.name)
-            chatbot = Chatbot(model, temperature, vectors)
-        st.session_state["ready"] = True
-        return chatbot

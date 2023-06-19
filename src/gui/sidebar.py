@@ -50,7 +50,7 @@ class Sidebar:
 
     def show_options(self):
         """Display a set of tools for interacting with the chat."""
-        with st.sidebar.expander("Tools", expanded=True):
+        with st.sidebar.expander("Tools", expanded=False):
             self.reset_chat_button()
             self.model_selector()
             self.temperature_slider()

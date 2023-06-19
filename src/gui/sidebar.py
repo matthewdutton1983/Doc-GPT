@@ -3,6 +3,8 @@ import streamlit as st
 
 
 class Sidebar:
+    """Class for managing the sidebar of the Streamlit application."""
+
     MODEL_OPTIONS = ["gpt-3.5-turbo", "gpt-4"]
     TEMPERATURE_MIN_VALUE = 0.0
     TEMPERATURE_MAX_VALUE = 1.0
@@ -11,6 +13,7 @@ class Sidebar:
 
     @staticmethod
     def about():
+        """Display information about the application and its dependencies."""
         about = st.sidebar.expander("About", expanded=False)
         sections = [
             "#### Powered by: [Langchain](https://github.com/hwchase17/langchain), "
@@ -22,17 +25,20 @@ class Sidebar:
             about.write(section)
 
     def model_selector(self):
+        """Display radio buttons to select the AI model to be used."""
         model = st.radio(
             label="Model", options=self.MODEL_OPTIONS, horizontal=True)
         st.session_state["model"] = model
 
     @staticmethod
     def reset_chat_button():
+        """Display a button to reset the chat."""
         if st.button("Reset chat"):
             st.session_state["reset_chat"] = True
         st.session_state.setdefault("reset_chat", False)
 
     def temperature_slider(self):
+        """Display a slider to set the "temperature" for the AI model's responses."""
         temperature = st.slider(
             label="Temperature",
             min_value=self.TEMPERATURE_MIN_VALUE,
@@ -43,6 +49,7 @@ class Sidebar:
         st.session_state["temperature"] = temperature
 
     def show_options(self):
+        """Display a set of tools for interacting with the chat."""
         with st.sidebar.expander("Tools", expanded=True):
             self.reset_chat_button()
             self.model_selector()

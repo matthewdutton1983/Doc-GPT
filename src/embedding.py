@@ -3,6 +3,7 @@ import hashlib
 import os
 import pickle
 import tempfile
+from typing import Any, Union
 
 # Import third-party libraries
 from langchain.document_loaders import PyPDFLoader
@@ -11,17 +12,26 @@ from langchain.vectorstores import FAISS
 
 
 class Embedder:
+    """Class for handling embedding vectors"""
+
     def __init__(self):
+        """Initializes the Embedder class"""
         self.PATH = "embeddings"
         self.create_embeddings_dir()
 
-    def create_embeddings_dir(self):
+    def create_embeddings_dir(self) -> None:
         """Creates a directory to store the embeddings vectors"""
         if not os.path.exists(self.PATH):
             os.mkdir(self.PATH)
 
-    def store_doc_embeds(self, file, hash):
-        """Stores document embeddings using Langchain and FAISS"""
+    def store_doc_embeds(self, file: Union[str, bytes], hash: str) -> None:
+        """
+        Stores document embeddings using Langchain and FAISS
+
+        Args:
+            file: File content as string or bytes.
+            hash: Hash of the file content.
+        """
         # Write the uploaded file to a temporary file
         with tempfile.NamedTemporaryFile(mode="wb", delete=False) as tmp_file:
             tmp_file.write(file)
@@ -43,8 +53,16 @@ class Embedder:
         with open(f"{self.PATH}/{hash}.pkl", "wb") as f:
             pickle.dump(vectors, f)
 
-    def get_doc_embeds(self, file):
-        """Retrieves document embeddings"""
+    def get_doc_embeds(self, file: Union[str, bytes]) -> Any:
+        """
+        Retrieves document embeddings
+
+        Args:
+            file: File content as string or bytes.
+
+        Returns:
+            The document embeddings.
+        """
         # Create a hash of the file content
         hash = hashlib.md5(file).hexdigest()
 

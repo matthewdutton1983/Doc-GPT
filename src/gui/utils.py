@@ -10,9 +10,15 @@ from embedding import Embedder
 
 
 class Utilities:
+    """Utility functions for Streamlit application"""
+
     @staticmethod
     def load_api_key():
-        """Loads the OpenAI API key from the .env file or from the user's input and returns it"""
+        """Loads the OpenAI API key from the .env file or from the user's input and returns it.
+
+        Returns:
+            str: The OpenAI API key.
+        """
         if os.path.exists(".env") and os.environ.get("OPENAI_API_KEY") is not None:
             user_api_key = os.environ["OPENAI_API_KEY"]
         else:
@@ -24,7 +30,11 @@ class Utilities:
 
     @staticmethod
     def handle_upload():
-        """Handles the file upload and displays the uploaded file"""
+        """Handles the file upload and displays the uploaded file.
+
+        Returns:
+            UploadedFile or None: The uploaded file if it exists, else None.
+        """
         uploaded_file = st.sidebar.file_uploader(
             "upload", type="pdf", accept_multiple_files=False, label_visibility="collapsed")
 
@@ -40,7 +50,16 @@ class Utilities:
 
     @staticmethod
     def setup_chatbot(uploaded_file, model, temperature):
-        """Sets up the chatbot with the uploaded file, model, and temperature"""
+        """Sets up the chatbot with the uploaded file, model, and temperature.
+
+        Args:
+            uploaded_file (str): The path to the uploaded file.
+            model (str): The model to be used by the chatbot.
+            temperature (float): The temperature parameter for the chatbot's response generation.
+
+        Returns:
+            Chatbot: The initialized chatbot.
+        """
         embeds = Embedder()
         with st.spinner("Processing ..."):
             # Check if uploaded_file is a string

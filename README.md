@@ -1,3 +1,3 @@
-# ChatPDF
+# Doc-GPT
 
-A chatbot that let you talk with your pdf file
+A chatbot that lets you talk with your PDF files.

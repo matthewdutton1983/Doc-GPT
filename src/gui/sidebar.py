@@ -1,11 +1,18 @@
+# Import standard libraries
+import os
+
 # Import third-party libraries
+import openai
 import streamlit as st
+
+openai.api_key = os.environ["OPENAI_API_KEY"]
 
 
 class Sidebar:
     """Class for managing the sidebar of the Streamlit application."""
+    models_list = openai.Model.list()
 
-    MODEL_OPTIONS = ["gpt-3.5-turbo", "gpt-4"]
+    MODEL_OPTIONS = [model["id"] for model in models_list["data"]]
     TEMPERATURE_MIN_VALUE = 0.0
     TEMPERATURE_MAX_VALUE = 1.0
     TEMPERATURE_DEFAULT_VALUE = 0.5
@@ -26,8 +33,8 @@ class Sidebar:
 
     def model_selector(self):
         """Display radio buttons to select the AI model to be used."""
-        model = st.radio(
-            label="Model", options=self.MODEL_OPTIONS, horizontal=True)
+        model = st.selectbox(
+            label="Model", options=self.MODEL_OPTIONS, index=13)
         st.session_state["model"] = model
 
     @staticmethod
